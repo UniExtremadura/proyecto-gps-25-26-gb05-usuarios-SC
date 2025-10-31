@@ -1,10 +1,4 @@
-import {
-	Entity,
-	Column,
-	PrimaryGeneratedColumn,
-	Generated,
-	OneToMany,
-} from 'typeorm';
+import { Entity, Column, OneToMany, PrimaryColumn } from 'typeorm';
 import { Address } from './address.entity';
 
 export enum UserRole {
@@ -15,8 +9,7 @@ export enum UserRole {
 
 @Entity()
 export class User {
-	@PrimaryGeneratedColumn()
-	@Generated('uuid')
+	@PrimaryColumn('uuid')
 	id: string;
 
 	@Column()

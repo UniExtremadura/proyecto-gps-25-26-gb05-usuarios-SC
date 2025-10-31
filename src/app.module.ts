@@ -11,7 +11,7 @@ import { UsersModule } from './modules/users/users.module';
 			type: 'postgres',
 			host: process.env.POSTGRESQL_HOST,
 			port: parseInt(process.env.POSTGRESQL_PORT || '3306'),
-			username: process.env.POSGRESQL_USERNAME,
+			username: process.env.POSTGRESQL_USERNAME,
 			password: process.env.POSTGRESQL_PASSWORD,
 			database: process.env.POSTGRESQL_DATABASE,
 			entities: [User],

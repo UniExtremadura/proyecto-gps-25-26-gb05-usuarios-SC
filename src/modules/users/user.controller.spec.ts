@@ -29,7 +29,7 @@ describe('UserController', () => {
 		usersController = moduleRef.get(UsersController);
 	});
 
-	describe('signUp', () => {
+	describe('postUser', () => {
 		it('Debería devolver el usuario recien creado', async () => {
 			const mockCreateUserDto: CreateUserDto = {
 				firstName: 'Test name',
@@ -52,7 +52,7 @@ describe('UserController', () => {
 			// Cuando 'usersService.insert' sea llamado, debe devolver 'mockCreatedUser'
 			jest.spyOn(usersService, 'insert').mockResolvedValue(mockCreatedUser);
 
-			const result = await usersController.signUp(mockCreateUserDto);
+			const result = await usersController.postUser(mockCreateUserDto);
 
 			expect(usersService.insert).toHaveBeenCalledWith(mockCreateUserDto);
 			// Verificamos que el controlador devolvió exactamente lo que el servicio le dio
