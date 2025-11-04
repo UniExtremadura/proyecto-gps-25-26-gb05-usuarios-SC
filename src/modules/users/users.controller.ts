@@ -17,8 +17,8 @@ import { type User as SbUser } from '@supabase/supabase-js';
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
+    @Post()
 	@UseGuards(AuthGuard)
-	@Post()
 	@HttpCode(HttpStatus.CREATED)
 	async postUser(
 		@Body() createUserDto: CreateUserDto,
