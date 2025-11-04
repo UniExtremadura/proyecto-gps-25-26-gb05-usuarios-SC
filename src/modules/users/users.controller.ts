@@ -1,6 +1,7 @@
 import {
 	Body,
 	Controller,
+	Delete,
 	HttpCode,
 	HttpStatus,
 	Post,
@@ -17,7 +18,7 @@ import { type User as SbUser } from '@supabase/supabase-js';
 export class UsersController {
 	constructor(private readonly usersService: UsersService) {}
 
-    @Post()
+	@Post()
 	@UseGuards(AuthGuard)
 	@HttpCode(HttpStatus.CREATED)
 	async postUser(
@@ -29,5 +30,12 @@ export class UsersController {
 		} catch (error) {
 			return await this.usersService.insert({ ...createUserDto, id: sbUser.id });
 		}
+	}
+
+	@Delete()
+	@UseGuards(AuthGuard)
+	@HttpCode(HttpStatus.OK)
+	async deleteUser(@SupabaseUser() sbUser: SbUser): Promise<void> {
+		await this.usersService.delete(sbUser.id);
 	}
 }
