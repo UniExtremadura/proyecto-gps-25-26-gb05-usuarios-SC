@@ -10,7 +10,7 @@ export enum UserRole {
 @Entity()
 export class User {
 	@PrimaryColumn('uuid')
-	id: string;
+	uuid: string;
 
 	@Column()
 	firstName: string;
@@ -25,7 +25,7 @@ export class User {
 		type: 'enum',
 		enum: UserRole,
 	})
-	role: string;
+	role: 'user' | 'admin' | 'artist';
 
 	@OneToMany(() => User, (user) => user.addressBook)
 	addressBook: Address[];
