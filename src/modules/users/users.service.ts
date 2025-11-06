@@ -8,7 +8,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import {supabase} from "../../lib/supabase";
+import { supabase } from "../../lib/supabase";
 
 @Injectable()
 export class UsersService {
@@ -49,7 +49,9 @@ export class UsersService {
 		}
 	}
 
-	async remove(id: string): Promise<void> {
+	async delete(id: string): Promise<void> {
 		await this.usersRepository.delete(id);
+		const { data, error } = await supabase.auth.admin.deleteUser(id);
+		if (error) throw new InternalServerErrorException();
 	}
 }

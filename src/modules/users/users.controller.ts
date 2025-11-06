@@ -3,8 +3,9 @@ import {
     Controller,
     HttpCode,
     HttpStatus, Param,
-    Post, Put, Req,
+    Post, Put,
     UseGuards,
+	  Delete,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -48,4 +49,10 @@ export class UsersController {
         return this.usersService.updateUser(id, updateUserDto);
     }
 
+    @Delete()
+    @UseGuards(AuthGuard)
+    @HttpCode(HttpStatus.OK)
+    async deleteUser(@SupabaseUser() sbUser: SbUser): Promise<void> {
+      await this.usersService.delete(sbUser.id);
+    }
 }
