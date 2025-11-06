@@ -7,7 +7,8 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { supabase } from '../../lib/supabase';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { supabase } from "../../lib/supabase";
 
 @Injectable()
 export class UsersService {
@@ -27,11 +28,16 @@ export class UsersService {
 		return user;
 	}
 
-	async update(id: string, user: User): Promise<User> {
-		const insertedUser = await this.usersRepository.save(user);
-		if (!insertedUser) throw NotFoundException;
-		return insertedUser;
-	}
+    async updateUser(id: string, dto: UpdateUserDto): Promise<User> {
+        const user = await this.usersRepository.preload({id, ...dto});
+        if (!user) throw new NotFoundException;
+
+        try {
+            return await this.usersRepository.save(user);
+        } catch (error) {
+            throw new InternalServerErrorException;
+        }
+    }
 
 	async insert(insertedUser: CreateUserDto): Promise<User> {
 		const user = this.usersRepository.create(insertedUser);
