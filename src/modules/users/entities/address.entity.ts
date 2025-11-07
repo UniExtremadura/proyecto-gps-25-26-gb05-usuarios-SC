@@ -4,13 +4,14 @@ import {
 	PrimaryGeneratedColumn,
 	Generated,
 	ManyToOne,
+	PrimaryColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
 @Entity()
 export class Address {
-	@PrimaryGeneratedColumn()
-	id: number;
+	@PrimaryColumn('uuid')
+	uuid: string;
 
 	@Column()
 	alias: string;
