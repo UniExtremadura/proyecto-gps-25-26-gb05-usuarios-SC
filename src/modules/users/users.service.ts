@@ -8,7 +8,8 @@ import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
-import { supabase } from '../../lib/supabase';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { supabase } from "../../lib/supabase";
 import { HttpService } from '@nestjs/axios';
 import { ServiceTokenProvider } from '../../common/providers/service-token.provider';
 import { firstValueFrom } from 'rxjs';
@@ -70,6 +71,17 @@ export class UsersService {
 
 		return await this.usersRepository.save(user);
 	}
+
+    async updateUser(uuid: string, dto: UpdateUserDto): Promise<User> {
+        const user = await this.usersRepository.preload({uuid, ...dto});
+        if (!user) throw new NotFoundException;
+
+        try {
+            return await this.usersRepository.save(user);
+        } catch (error) {
+            throw new InternalServerErrorException;
+        }
+    }
 
 	async delete(uuid: string): Promise<void> {
 		const user = await this.usersRepository.findOneBy({ uuid });
