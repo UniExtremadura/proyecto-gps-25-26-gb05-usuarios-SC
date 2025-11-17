@@ -5,9 +5,14 @@ import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { HttpModule } from '@nestjs/axios';
 import { ServiceTokenProvider } from '../../common/providers/service-token.provider';
+import {Address} from "./entities/address.entity";
 
 @Module({
-	imports: [TypeOrmModule.forFeature([User]), HttpModule],
+	imports: [
+		TypeOrmModule.forFeature([Address]),
+		TypeOrmModule.forFeature([User]),
+		HttpModule
+	],
 	controllers: [UsersController],
 	providers: [UsersService, ServiceTokenProvider],
 })

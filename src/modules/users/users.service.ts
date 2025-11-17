@@ -2,7 +2,7 @@ import {
 	HttpStatus,
 	Injectable,
 	InternalServerErrorException,
-	NotFoundException,
+	NotFoundException, UnauthorizedException,
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -13,11 +13,16 @@ import { supabase } from "../../lib/supabase";
 import { HttpService } from '@nestjs/axios';
 import { ServiceTokenProvider } from '../../common/providers/service-token.provider';
 import { firstValueFrom } from 'rxjs';
+import { v4 as uuidv4 } from 'uuid';
+import {Address} from "./entities/address.entity";
+import {CreateAddressDto} from "./dto/create-address.dto";
+import {UpdateAddressDto} from "./dto/update-address.dto";
 
 @Injectable()
 export class UsersService {
 	constructor(
 		@InjectRepository(User) private usersRepository: Repository<User>,
+		@InjectRepository(Address) private addressRepository: Repository<Address>,
 		private httpService: HttpService,
 		private serviceTokenProvider: ServiceTokenProvider,
 	) {}
@@ -32,6 +37,10 @@ export class UsersService {
 		const user = await this.usersRepository.findOneBy({ uuid });
 		if (!user) throw NotFoundException;
 		return user;
+	}
+
+	async findAddressesByUserUuid(uuid: string): Promise<Address[]> {
+		return await this.addressRepository.findBy({ user: { uuid } });
 	}
 
 	async create(insertedUser: CreateUserDto): Promise<User> {
@@ -72,7 +81,20 @@ export class UsersService {
 		return await this.usersRepository.save(user);
 	}
 
-    async updateUser(uuid: string, dto: UpdateUserDto): Promise<User> {
+	async createAddress(uuid: string, createAddressDto: CreateAddressDto) {
+		const user = await this.usersRepository.findOneBy({ uuid });
+		if (!user) throw new NotFoundException();
+
+		const address = this.addressRepository.create({
+			...createAddressDto,
+			uuid: uuidv4(),
+			user
+		});
+
+		return await this.addressRepository.save(address);
+	}
+
+    async update(uuid: string, dto: UpdateUserDto): Promise<User> {
         const user = await this.usersRepository.preload({uuid, ...dto});
         if (!user) throw new NotFoundException;
 
@@ -82,6 +104,20 @@ export class UsersService {
             throw new InternalServerErrorException;
         }
     }
+
+	async updateAddress(uuid: string, updateAddressDto: UpdateAddressDto): Promise<any> {
+		const address = await this.addressRepository.findOne({
+			relations: ['user'],
+			where: { uuid }
+		});
+		if (!address) throw new NotFoundException();
+		if (address.user.uuid !== updateAddressDto.userUuid) throw new UnauthorizedException();
+		return await this.addressRepository.save({
+			...address,
+			...updateAddressDto,
+			userUuid: undefined
+		})
+	}
 
 	async delete(uuid: string): Promise<void> {
 		const user = await this.usersRepository.findOneBy({ uuid });
@@ -115,5 +151,16 @@ export class UsersService {
 				),
 			);
 		}
+	}
+
+	async deleteAddress(userUuid: string, addressUuid: string) {
+		const user = await this.findOneByUuid(userUuid);
+		const address = await this.addressRepository.findOne({
+			relations: ['user'],
+			where: { uuid: addressUuid }
+		});
+		if (!address) throw new NotFoundException();
+		if (user.uuid !== address.user.uuid) throw new UnauthorizedException();
+		await this.addressRepository.delete(address);
 	}
 }

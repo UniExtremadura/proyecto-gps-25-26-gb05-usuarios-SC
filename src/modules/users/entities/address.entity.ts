@@ -4,7 +4,7 @@ import {
 	PrimaryGeneratedColumn,
 	Generated,
 	ManyToOne,
-	PrimaryColumn,
+	PrimaryColumn, JoinColumn,
 } from 'typeorm';
 import { User } from './user.entity';
 
@@ -37,6 +37,7 @@ export class Address {
 	@Column('int')
 	phoneNumber: number;
 
-	@ManyToOne(() => Address, (address) => address.user)
+	@ManyToOne(() => User, (user) => user.addressBook, { onDelete: 'CASCADE' })
+	@JoinColumn({ name: 'user' })
 	user: User;
 }

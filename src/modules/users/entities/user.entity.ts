@@ -27,6 +27,6 @@ export class User {
 	})
 	role: 'user' | 'admin' | 'artist';
 
-	@OneToMany(() => User, (user) => user.addressBook)
+	@OneToMany(() => Address, (address) => address.user, { cascade: true, onDelete: 'CASCADE' })
 	addressBook: Address[];
 }
