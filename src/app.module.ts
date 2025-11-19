@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './modules/users/entities/user.entity';
 import { UsersModule } from './modules/users/users.module';
+import {Address} from "./modules/users/entities/address.entity";
 
 @Module({
 	imports: [
@@ -14,7 +15,7 @@ import { UsersModule } from './modules/users/users.module';
 			username: process.env.POSTGRESQL_USERNAME,
 			password: process.env.POSTGRESQL_PASSWORD,
 			database: process.env.POSTGRESQL_DATABASE,
-			entities: [User],
+			entities: [User, Address],
 			synchronize: true,
 		}),
 		UsersModule,
