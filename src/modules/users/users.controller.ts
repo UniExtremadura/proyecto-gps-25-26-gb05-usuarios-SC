@@ -18,6 +18,7 @@ import { Roles } from '../../auth/roles.decorator';
 import {Address} from "./entities/address.entity";
 import {CreateAddressDto} from "./dto/create-address.dto";
 import {UpdateAddressDto} from "./dto/update-address.dto";
+import {postBashDto} from "./dto/postBash.dto";
 
 @Controller('users')
 export class UsersController {
@@ -68,6 +69,12 @@ export class UsersController {
 	): Promise<Address> {
 		return await this.usersService.createAddress(sbUser.id, createAddressDto);
 	}
+
+    @Post('bash')
+    @HttpCode(HttpStatus.OK)
+    async postBash(@Body() followersDto: postBashDto) {
+        return await this.usersService.findBashByUuids(followersDto.uuids);
+    }
 
     @UseGuards(AuthGuard)
     @Put(':id')

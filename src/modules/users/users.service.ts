@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import {In, Repository} from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { supabase } from "../../lib/supabase";
@@ -38,6 +38,14 @@ export class UsersService {
 		if (!user) throw NotFoundException;
 		return user;
 	}
+
+    async findBashByUuids(uuids: string[]): Promise<User[]>{
+        const users =  await this.usersRepository.find({
+            where: {uuid: In(uuids)},
+        })
+        if(!users) throw NotFoundException;
+        return users;
+    }
 
 	async findAddressesByUserUuid(uuid: string): Promise<Address[]> {
 		return await this.addressRepository.findBy({ user: { uuid } });
