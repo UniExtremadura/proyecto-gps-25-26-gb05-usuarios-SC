@@ -84,6 +84,20 @@ export class UsersService {
 					},
 				),
 			);
+
+			await firstValueFrom(
+				this.httpService.post(
+					`${process.env.COMPRAS_SERVICE_BASE_URL}/payments/wallet`,
+					{
+						artistUuid: insertedUser.uuid,
+					},
+					{
+						headers: {
+							Authorization: `Bearer ${serviceToken}`
+						}
+					}
+				)
+			)
 		}
 
 		return await this.usersRepository.save(user);
