@@ -2,13 +2,11 @@ import {
 	CanActivate,
 	ExecutionContext,
 	Injectable,
-	InternalServerErrorException,
 	UnauthorizedException,
 } from '@nestjs/common';
 import { Request } from 'express';
 import { supabase } from '../lib/supabase';
 import { Reflector } from '@nestjs/core';
-import { ServiceTokenProvider } from '../common/providers/service-token.provider';
 import { Roles } from './roles.decorator';
 import { UsersService } from '../modules/users/users.service';
 
