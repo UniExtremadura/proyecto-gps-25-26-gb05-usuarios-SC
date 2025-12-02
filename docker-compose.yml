@@ -1,0 +1,56 @@
+services:
+  usuarios:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: usuarios
+    restart: always
+    environment:
+      PORT: ${PORT}
+
+      POSTGRESQL_HOST: usuarios-postgres
+      POSTGRESQL_PORT: 5432
+      POSTGRESQL_USERNAME: ${POSTGRESQL_USERNAME}
+      POSTGRESQL_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRESQL_DATABASE: ${POSTGRESQL_DATABASE}
+
+      SUPABASE_PROJECT_URL: ${SUPABASE_PROJECT_URL}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      SERVICE_AUTH_EMAIL: ${SERVICE_AUTH_EMAIL}
+      SERVICE_AUTH_PASSWORD: ${SERVICE_AUTH_PASSWORD}
+
+      CONTENIDOS_SERVICE_BASE_URL: http://contenidos:${CONTENIDOS_SERVICE_PORT}
+      COMPRAS_SERVICE_BASE_URL: http://compras:${COMPRAS_SERVICE_PORT}
+      ESTADISTICAS_SERVICE_BASE_URL: http://estadisticas:${ESTADISTICAS_SERVICE_PORT}
+    depends_on:
+      - usuarios-postgres
+    ports:
+      - "${PORT}:${PORT}"
+    networks:
+      usuarios:
+      undersounds:
+    profiles:
+      - prod
+
+  usuarios-postgres:
+    image: postgres:17.6-alpine
+    container_name: usuarios-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USERNAME}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRESQL_DATABASE}
+    ports:
+      - "${POSTGRESQL_EXT_PORT}:5432"
+    volumes:
+      - usuarios-postgres-data:/var/lib/postgresql/data
+    networks:
+      usuarios:
+
+volumes:
+  usuarios-postgres-data:
+
+networks:
+  usuarios:
+  undersounds:
+    external: true
