@@ -11,7 +11,7 @@ import {Address} from "./modules/users/entities/address.entity";
 		TypeOrmModule.forRoot({
 			type: 'postgres',
 			host: process.env.POSTGRESQL_HOST,
-			port: parseInt(process.env.POSTGRESQL_PORT || '3306'),
+			port: Number.parseInt(process.env.POSTGRESQL_PORT || '3306'),
 			username: process.env.POSTGRESQL_USERNAME,
 			password: process.env.POSTGRESQL_PASSWORD,
 			database: process.env.POSTGRESQL_DATABASE,
