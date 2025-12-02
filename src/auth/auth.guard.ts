@@ -15,7 +15,7 @@ import { UsersService } from '../modules/users/users.service';
 @Injectable()
 export class AuthGuard implements CanActivate {
 	constructor(
-		private reflector: Reflector,
+		private readonly reflector: Reflector,
 		private readonly usersService: UsersService,
 	) {}
 
