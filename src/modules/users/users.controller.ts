@@ -18,7 +18,7 @@ import { Roles } from '../../auth/roles.decorator';
 import {Address} from "./entities/address.entity";
 import {CreateAddressDto} from "./dto/create-address.dto";
 import {UpdateAddressDto} from "./dto/update-address.dto";
-import {postBashDto} from "./dto/postBash.dto";
+import {PostBashDto} from "./dto/postBash.dto";
 
 @Controller('users')
 export class UsersController {
@@ -72,7 +72,7 @@ export class UsersController {
 
     @Post('bash')
     @HttpCode(HttpStatus.OK)
-    async postBash(@Body() followersDto: postBashDto) {
+    async postBash(@Body() followersDto: PostBashDto) {
         return await this.usersService.findBashByUuids(followersDto.uuids);
     }
 

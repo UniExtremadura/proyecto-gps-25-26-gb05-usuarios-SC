@@ -1,6 +1,6 @@
-import {ArrayUnique, IsArray, IsNotEmpty, IsString} from "class-validator";
+import {ArrayUnique, IsArray, IsNotEmpty} from "class-validator";
 
-export class postBashDto {
+export class PostBashDto {
     @ArrayUnique()
     @IsArray()
     @IsNotEmpty()
